@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-bit-title text-center">
+                    <h2>
+                        {% trans "Categories" %}
+                      </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <h2><a href="{{category.get_absolute_url}}">{{category.name}}</a></h2>
+                    <div style="text-align: center;">
+                        <img src="{% if category.image %}{{category.image.url}} {% else %} {% static "img/no-img.jpg" %} {% endif %}" width="300" height="200" alt="Slide">
+                      </div>
+                    <div class="product-option-shop">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                {% if categories.has_other_pages %}
+                <div class="product-pagination text-center">
+                    <nav>
+                        <ul class="pagination">
+                            {% if categories.has_previous %}
+                            <li>
+                                <a href="?page={{ categories.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&laquo;</span></li>
+                            {% endif %}
+                            {% for i in categories.paginator.page_range %}
+                            <li {% if categories.number == i %}class="active"{% endif %}><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% endfor %}
+                            {% if categories.has_next %}
+                            <li>
+                                <a href="?page={{ categories.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                             <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+{% endblock %}

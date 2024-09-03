@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-bit-title text-center">
+                    <h2>
+                        {% if category %}{{ category.name }}
+                        {% else %}{% trans "Products" %}{% endif %}
+                      </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="sidebar">
+    <h3>{% trans "Categories" %}</h3>
+    <ul>
+      <li {% if not category %}class="selected"{% endif %}>
+        <a href="{% url "shop:product_list" %}">{% trans "All" %}</a>
+      </li>
+      {% for c in categories %}
+        <li {% if category.slug == c.slug %}class="selected"
+        {% endif %}>
+          <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            {% if products %}
+            {% for product in products %}
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        
+                        <img class="pr_img" src="{% if product.image %}{{product.image.url}} {% else %} {% static "img/no-img.jpg" %} {% endif %} " alt="">
+                    </div>
+                    <h2><a href="{{product.get_absolute_url}}">{{product.name}}</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>{{product.price}}$</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        {% comment %} <form action="{% url "cart:cart_add" product.id %}" method="post">
+                            <!-- Your form fields go here -->
+                            <input type="submit" class="add_to_cart_button" value="Add to cart">
+                            {% csrf_token %}
+                        </form> {% endcomment %}
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="{% url "cart:cart_add" product.id %}">{% trans "Add to cart" %}</a>
+                            {% comment %} <i class="fa-sharp fa-light fa-square-heart"></i> {% endcomment %}
+                            <a><i class="fa fa-2x 
+                                {% if product in wishlst %}
+                                fa-heart
+                               {% else %}
+                                fa-heart-o
+                               {% endif %}" id="wishlistHeart" data-product-id="{{ product.id }}"></i></a>
+                            {% comment %} <i class="fa fa-2x fa-square-heart"  style="color: red;"></i> {% endcomment %}
+                            {% comment %} <div style="width: 100px; height: 100px; background-color: black; display: flex; justify-content: center; align-items: center;">
+                                <!-- Heart Icon -->
+                                <i class="fas fa-heart" style="color: white; font-size: 40px;"></i>
+                              </div> {% endcomment %}
+                            {% comment %} <i class="fa-regular fa-square square-border"></i>
+                            <i class="fa fa-heart heart-icon"></i> {% endcomment %}
+                            {% comment %} <i class="fa-5x fa-regular fa-light fa-square square-border"><a><i class="fa fa-2x fa-heart-o" id="wishlistHeart"></i></a></i> {% endcomment %}
+                            {% comment %} <i class="fa fa-thin fa-square square-border"></i>
+                            <i class="fa-3x fa-light fa-square"></i> {% endcomment %}
+                        {% comment %} <a><i class="fa fa-2x fa-heart-o" id="wishlistHeart"></i></a> {% endcomment %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p style="text-align: center; font-weight: bold; font-size: 24px; border: 2px dotted #5a88ca; padding: 100px;"> No data found.</p>
+            {% endif %}
+            {% comment %} <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-1.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-3.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-4.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-2.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-1.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-3.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-4.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-2.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-1.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-3.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{% static "img/product-4.jpg" %} " alt="">
+                    </div>
+                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>$899.00</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                    </div>
+                </div>
+            </div> {% endcomment %}
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                {% if products.has_other_pages %}
+                <div class="product-pagination text-center">
+                    <nav>
+                        <ul class="pagination">
+                            {% if products.has_previous %}
+                            <li>
+                                <a href="?page={{ products.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&laquo;</span></li>
+                            {% endif %}
+                            {% for i in products.paginator.page_range %}
+                            <li {% if products.number == i %}class="active"{% endif %}><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% endfor %}
+                            {% if products.has_next %}
+                            <li>
+                                <a href="?page={{ products.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                             <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var wishlistHearts = document.querySelectorAll('#wishlistHeart');
+        
+        wishlistHearts.forEach(function(wishlistHeart) {
+            wishlistHeart.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent the default action
+                const productId = this.dataset.productId;
+                const url = `/wishlist/toggle/${productId}/`;
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                })
+                
+                if (this.classList.contains('fa-heart-o')) {
+                    this.classList.add('fa-heart');
+                    this.classList.remove('fa-heart-o'); // Change to filled heart
+                } else {
+                    this.classList.add('fa-heart-o');
+                    this.classList.remove('fa-heart'); // Change to outlined heart
+                }
+            });
+        });
+    });    
+</script>
+{% endblock %}

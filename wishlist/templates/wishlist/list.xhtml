@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-bit-title text-center">
+                    <h2>
+                        {% trans "Your Wish List" %}
+                      </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        
+                        <img class="pr_img" src="{% if product.image %}{{product.image.url}} {% else %} {% static "img/no-img.jpg" %} {% endif %} " alt="">
+                    </div>
+                    <h2><a href="{{product.get_absolute_url}}">{{product.name}}</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>{{product.price}}$</ins> <del>$999.00</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        {% comment %} <form action="{% url "cart:cart_add" product.id %}" method="post">
+                            <!-- Your form fields go here -->
+                            <input type="submit" class="add_to_cart_button" value="Add to cart">
+                            {% csrf_token %}
+                        </form> {% endcomment %}
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70"
+                            rel="nofollow" href="{% url "cart:cart_add" product.id %}">{% trans "Add to cart" %}</a>
+                            <a><i class="fa fa-2x fa-heart" id="wishlistHeart" data-product-id="{{ product.id }}"></i></a>
+                            
+                            {% comment %} <div style="width: 100px; height: 100px; background-color: black; display: flex; justify-content: center; align-items: center;">
+                                <!-- Heart Icon -->
+                                <i class="fas fa-heart" style="color: white; font-size: 40px;"></i>
+                              </div> {% endcomment %}
+                            {% comment %} <i class="fa-regular fa-square square-border"></i>
+                            <i class="fa fa-heart heart-icon"></i> {% endcomment %}
+                            {% comment %} <i class="fa-5x fa-regular fa-light fa-square square-border"><a><i class="fa fa-2x fa-heart-o" id="wishlistHeart"></i></a></i> {% endcomment %}
+                            {% comment %} <i class="fa fa-thin fa-square square-border"></i>
+                            <i class="fa-3x fa-light fa-square"></i> {% endcomment %}
+                        {% comment %} <a><i class="fa fa-2x fa-heart-o" id="wishlistHeart"></i></a> {% endcomment %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% comment %} {% for product in request.user.user_wishlist.product_id.all %}
+        <p>{{product}}</p>
+        {% endfor %} {% endcomment %}
+
+        <div class="row">
+            <div class="col-md-12">
+                {% if products.has_other_pages %}
+                <div class="product-pagination text-center">
+                    <nav>
+                        <ul class="pagination">
+                            {% if products.has_previous %}
+                            <li>
+                                <a href="?page={{ products.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&laquo;</span></li>
+                            {% endif %}
+                            {% for i in products.paginator.page_range %}
+                            <li {% if products.number == i %}class="active"{% endif %}><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% endfor %}
+                            {% if products.has_next %}
+                            <li>
+                                <a href="?page={{ products.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                             <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var wishlistHearts = document.querySelectorAll('#wishlistHeart');
+        
+        wishlistHearts.forEach(function(wishlistHeart) {
+            wishlistHeart.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent the default action
+                const productId = this.dataset.productId;
+                const url = `/wishlist/toggle/${productId}/`;
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                })
+                
+                if (this.classList.contains('fa-heart-o')) {
+                    this.classList.add('fa-heart');
+                    this.classList.remove('fa-heart-o'); // Change to filled heart
+                } else {
+                    this.classList.add('fa-heart-o');
+                    this.classList.remove('fa-heart'); // Change to outlined heart
+                }
+            });
+        });
+    });  
+    </script>
+    
+{% endblock %}

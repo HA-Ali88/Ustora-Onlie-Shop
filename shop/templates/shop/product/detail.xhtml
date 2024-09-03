@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+{% block content %}
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-bit-title text-center">
+                    <h2>{% trans "Shop" %}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="single-sidebar">
+                    <h2 class="sidebar-title">{% trans "Search Products" %}</h2>
+                    <form action="{% url "shop:search_by_name_desc" %}">
+                        <input name="search_term" type="text" placeholder="{% trans "Search Products" %}...">
+                        <input type="submit" value="{% trans "Search" %}">
+                    </form>
+                </div>
+                <div class="single-sidebar">
+                    <h2 class="sidebar-title">{% trans "Products" %}</h2>
+                    {% for pr in Cproducts %}
+                    <div class="thubmnail-recent">
+                        <img src="{% if pr.image %}{{pr.image.url}} {% else %} {% static "img/no-img.jpg" %} {% endif %} " class="recent-thumb" alt="">
+                        <h2><a href="{{pr.get_absolute_url}}">{{pr.name}}</a></h2>
+                        <div class="pr-sidebar-price">
+                            <ins>{{pr.price}}</ins> <del>$100.00</del>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                </div>
+                <div class="single-sidebar">
+                    <h2 class="sidebar-title">{% trans "Recent Posts" %}</h2>
+                    <ul>
+                        {% for product in recent_products  %}
+                        <li><a href="{{product.get_absolute_url}}">{{product.name}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>             
+                
+            </div>
+
+            <div class="col-md-8">
+                <div class="product-content-right">
+                    <div class="product-breadcroumb">
+                        <a href="{% url "shop:product_list" %}">Home</a>
+                        <a href="">Category Name</a>
+                        <a href="{% url "shop:product_detail" id=product.id slug=product.slug %}">{{product.name}}</a>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="product-images">
+                                <div class="product-main-img">
+                                    <img src="{% if product.image %}{{product.image.url}} {% else %} {% static "img/no-img.jpg" %} {% endif %}" alt="">
+                                </div>
+
+                                <div class="product-gallery">
+                                    <img src="{% static "img/product-thumb-1.jpg" %} " alt="">
+                                    <img src="{% static "img/product-thumb-2.jpg" %} " alt="">
+                                    <img src="{% static "img/product-thumb-3.jpg" %} " alt="">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="product-inner">
+                                <h2 class="product-name">{{product.name}}</h2>
+                                <div class="product-inner-price">
+                                    <ins>{{product.price}}$</ins> <del>$100.00</del>
+                                </div>
+
+                                <form action="{% url "cart:cart_add" product.id %}" method="post" class="cart">
+                                    <div class="quantity">
+                                        <input type="number" size="4" class="input-text qty text" title="Qty" value="1"
+                                            name="quantity" min="1" step="1">
+                                        <input type="hidden" value="0" name="override">
+                                        {% csrf_token %}
+                                    </div>
+                                    <button class="add_to_cart_button" type="submit">{% trans "Add to cart" %}</button>
+                                </form>
+
+                                <div class="product-inner-category">
+                                    <p>{% trans "Category" %}: <a href="{{product.category.get_absolute_url}}">{{product.category}}</a>.
+                                        
+                                         {% trans "Tags" %}: 
+                                         {% for tag in product.tags.all %}
+                                         <a href="{% url "shop:product_by_slug" tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}. </p>
+                                </div>
+
+                                <div role="tabpanel">
+                                    <ul class="product-tab" role="tablist">
+                                        <li role="presentation" class="active"><a href="#home" aria-controls="home"
+                                                role="tab" data-toggle="tab">{% trans "Description" %}</a></li>
+                                        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab"
+                                                data-toggle="tab">Reviews</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane fade in active" id="home">
+                                            <h2>{% trans "Product Description" %}</h2>
+                                            <p>{{ product.description|linebreaks }}</p>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane fade" id="profile">
+                                            <h2>{% trans "Reviews" %}</h2>
+                                            <div class="submit-review">
+                                            {% if messages %}
+                                                <div class="messages">
+                                                    {% for message in messages %}
+                                                        <div class="alert alert-warning alert-dismissible" role="alert">
+                                                            {{ message }}
+                                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                            <h2>Average Rating:</h2>
+                                            <div class="product-wid-rating">
+                                                {% if average_rating_range %}
+                                                {% for x in average_rating_range %}
+                                                <i class="fa fa-star"></i>
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% for x in no_rating %}
+                                                <i class="fa fa-star-o"></i>
+                                                {% endfor %}
+                                            </div>
+                                            <h3>{{ review_count }} Review{{ review_count|pluralize }}</h3>
+
+                                                {% for review in reviews %}
+                                                    <div>
+                                                        <strong>{{ review.user.username }}</strong> 
+                                                        <div class="product-wid-rating">
+                                                            {% with review.rating as rating %}
+                                                            {% if rating %}
+                                                            {% for x in rating|make_range %}
+                                                            <i class="fa fa-star"></i>
+                                                            {% endfor %}
+                                                            {% with no_rated=5|subtract:rating  %}
+                                                            {% for x in no_rated|make_range %}
+                                                            <i class="fa fa-star-o"></i>
+                                                            {% endfor %}
+                                                            {% endwith %}
+                                                            {% else %}
+                                                            {% for x in 5|make_range %}
+                                                            <i class="fa fa-star-o"></i>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                            {% endwith %}
+                                                        </div>
+                                                        <p>{{ review.comment }}</p>
+                                                        <small>{{ review.created_at }}</small>
+                                                    </div>
+                                                {% endfor %}
+                                                <form action="{% url "shop:product_detail" product.id product.slug %}" method="POST">
+                                                <p><label for="email">{% trans "Email" %}</label> <input name="email" type="email"></p>
+                                                {% comment %} <p><input name="user" type="hidden" value="None"></p> {% endcomment %}
+                                                <div class="rating-chooser">
+                                                    <p>{% trans "Your rating" %}</p>
+
+                                                    <div class="rating-wrap-post">
+                                                        <i data-num = "1" id="star" class="fa fa-star-o"></i>
+                                                        <i data-num = "2" id="star" class="fa fa-star-o"></i>
+                                                        <i data-num = "3" id="star" class="fa fa-star-o"></i>
+                                                        <i data-num = "4" id="star" class="fa fa-star-o"></i>
+                                                        <i data-num = "5" id="star" class="fa fa-star-o"></i>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="rating" id="rating" value="0">
+                                                <p><label for="review">{% trans "Your rating" %}</label> <textarea name="comment" id=""
+                                                        cols="30" rows="10"></textarea></p>
+                                                        {% csrf_token %}
+                                                <p><input type="submit" value="{% trans "Submit" %}"></p>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if recommended_products %}
+                    <div class="related-products-wrapper">
+                        <h2 class="related-products-title">{% trans "Related Products" %}</h2>
+                        <div class="related-products-carousel">
+                            {% for p in recommended_products %}
+                            <div class="single-product">
+                                <div class="product-f-image">
+                                    <img src="{% if p.image %}{{ p.image.url }}{% else %}
+                                    {% static  "img/no-img.jpg" %}{% endif %}" alt="">
+                                    <div class="product-hover">
+                                        <a href="{% url "cart:cart_add" p.id %}" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to
+                                            cart</a>
+                                        <a href="{{ p.get_absolute_url }}" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                                    </div>
+                                </div>
+
+                                <h2><a href="">{{ p.name }}</a></h2>
+
+                                <div class="product-carousel-price">
+                                    <ins>${{p.price}}</ins> <del>$100.00</del>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var stars = document.querySelectorAll('#star');
+        
+        stars.forEach(function(star) {
+            star.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent the default action
+                const num = parseInt(this.dataset.num);
+                $('#rating').val(num);
+                document.querySelectorAll('#star').forEach(s => {
+                    if (parseInt(s.getAttribute('data-num')) <= num) {
+                    if (star.classList.contains('fa-star-o')) {
+                        s.classList.add('fa-star');
+                        s.classList.remove('fa-star-o'); // Change to filled star
+                    } else {
+                        s.classList.add('fa-star-o');
+                        s.classList.remove('fa-star'); // Change to outlined star
+                    }
+                }
+              });
+            });
+        });
+    });    
+</script>
+{% endblock %}

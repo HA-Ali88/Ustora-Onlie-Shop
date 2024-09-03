@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load custom_tags %}
+<div class="col-md-3 col-sm-6">
+    <div class="footer-menu">
+        <h2 class="footer-wid-title">{% trans "Categories" %}</h2>
+        <ul>
+            {% for category in categories %}
+            <li><a href="{{category.get_absolute_url}}">{{category.name}}</a></li>
+            {% endfor %}
+        </ul>                        
+    </div>
+</div>

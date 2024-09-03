@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>User Info</title>
+    <link rel="stylesheet" href="{% static "css/login.css" %}">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+      <div class="wrapper3">
+      <div class="title-text">
+        <div class="title login">User Info</div>
+        <div class="title signup">tt</div>
+      </div>
+      
+      <a href="{% url 'account:user_list' %}" class="btn btn-primary">Back</a></br>
+          <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>User Name</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Groups</th>
+                    <th>Active</th>
+                    <th>Last Login</th>
+                    <th>Date Joined</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% comment %} <a href="{{ user.get_absolute_url }}" class="title">
+                  {{ user.get_full_name }}
+                </a> {% endcomment %}
+                <tr>
+                    <td> <a href="{% url "account:user_detail" username=user.username %}"> {{user.username}} </a> </td>
+                    <td>{{ user.get_full_name }}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.is_staff}}</td>
+                    <td>{{user.geoups}}</td>
+                    <td>{{user.is_active}}</td>
+                    <td>{{user.last_login}}</td>
+                    <td>{{user.date_joined}}</td>
+                </tr>
+              </br>
+            </tbody>
+            <a href="{% url 'account:edit' %}" class="btn btn-primary">Edit User</a>
+        </table>
+    </div>
+    <!-- Bootstrap JS form CDN -->
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+  </body>
+</html>

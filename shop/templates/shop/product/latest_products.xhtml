@@ -1,0 +1,36 @@
+{% load static %}
+{% load custom_tags %}
+<div class="maincontent-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="latest-product">
+                    <h2 class="section-title">Latest Products</h2>
+
+                    <div class="product-carousel">
+                        {% for product in products %}
+                        <div class="single-product">
+                            <div class="product-f-image">
+                                <img src="{% if product.image %} {{product.image.url}} {% else %} {% static "img/no-img.jpg" %} {% endif %}" alt="">
+                                <div class="product-hover">
+                                    <a href="{% url "cart:cart_add" product.id %}" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to
+                                        cart</a>
+                                    <a href="{{ product.get_absolute_url }}" class="view-details-link"><i class="fa fa-link"></i>
+                                        See details</a>
+                                </div>
+                            </div>
+
+                            <h2><a href="{{product.get_absolute_url}}">{{product.name}}</a></h2>
+
+                            <div class="product-carousel-price">
+                                <ins>${{product.price}}</ins> <del>$100.00</del>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- End main content area -->

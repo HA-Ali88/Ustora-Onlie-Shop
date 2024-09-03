@@ -1,0 +1,249 @@
+{% load i18n %}
+{% load static %}
+{% load custom_tags %}
+<!DOCTYPE html>
+<!--
+	ustora by freshdesignweb.com
+	Twitter: https://twitter.com/freshdesignweb
+	URL: https://www.freshdesignweb.com/ustora/
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% trans "UStora" %}</title>
+    
+    <!-- Google Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static "css/font-awesome.min.css" %}">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static "css/owl.carousel.css" %}">
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <link rel="stylesheet" href="{% static "css/responsive.css" %}">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+   
+    <div class="header-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="user-menu">
+                        <ul>
+                            <li><a href="{% url "account:user_detail" username=request.user %}"><i class="fa fa-user"></i>{% trans "My Account" %}</a></li>
+                            <li><a href="{% url "wishlist:list" %}"><i class="fa fa-heart"></i>{% trans "Wishlist" %}</a></li>
+                            <li><a href="{% url "cart:cart_detail" %}"><i class="fa fa-user"></i>{% trans "My Cart" %}</a></li>
+                            <li><a href="{% url "orders:order_create" %}"><i class="fa fa-user"></i>{% trans "Checkout" %}</a></li>
+                            <li><a href="{% url "account:login" %}"><i class="fa fa-user"></i>{% trans "Login" %}</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="header-right">
+                        <ul class="list-unstyled list-inline">
+                            <li class="dropdown dropdown-small">
+                                <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><span class="key">currency :</span><span class="value">USD </span><b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">{% trans "USD" %}</a></li>
+                                    <li><a href="#">{% trans "INR" %}</a></li>
+                                    <li><a href="#">{% trans "GBP" %}</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown dropdown-small">
+                                {% get_current_language as LANGUAGE_CODE %}
+                                {% get_available_languages as LANGUAGES %}
+                                {% get_language_info_list for LANGUAGES as languages %}
+                                <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#">
+                                    <span class="key">language :</span>
+                                    <span id="current-language" class="value">
+                                        {% for language in languages %}
+                                        {% if language.code == LANGUAGE_CODE %}
+                                        {{ language.name_local }}
+                                        {% endif %}
+                                        {% endfor %}
+                                    </span> <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    {% for language in languages %}
+                                    <li {% if language.code == LANGUAGE_CODE %} class="active" {% endif %}><a href="/{{ language.code }}/">{{ language.name_local }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>                
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End header area -->
+    
+    <div class="site-branding-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="logo">
+                        <h1><a href="./"><img src="{% static "img/logo.png" %}"></a></h1>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6">
+                    <div class="shopping-item">
+                        {% with total_items=cart|length %}
+                        <a href="{% url "cart:cart_detail" %}">{% trans "Cart" %} - <span class="cart-amunt">{% if total_items > 0 %} ${{ cart.get_total_price }} {% else %} $0 {% endif %}</span> <i class="fa fa-shopping-cart"></i> <span class="product-count">{% if total_items > 0 %} {{ total_items }} {% else %} 0 {% endif %}</span></a>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End site branding area -->
+    
+    <div class="mainmenu-area">
+        <div class="container">
+            <div class="row">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">{% trans "Toggle navigation" %}</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div> 
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li {% if section == "home" %}class="active"{% endif %}><a href="{% url "shop:home_page" %}">{% trans "Home" %}</a></li>
+                        <li {% if section == "list" %}class="active"{% endif %}><a href="{% url "shop:product_list" %}">{% trans "Shop" %}</a></li>
+                        {% comment %} <li {% if section == "dashboard" %}class="active"{% endif %}><a href="shop.html">Shop page</a></li> {% endcomment %}
+                        <li {% if section == "detail" %}class="active"{% endif %}><a href="#">{% trans "Single product" %}</a></li>
+                        <li {% if section == "cart" %}class="active"{% endif %}><a href="{% url "cart:cart_detail" %}">{% trans "Cart" %}</a></li>
+                        <li {% if section == "checkout" %}class="active"{% endif %}><a href="{% url "orders:order_create" %}">{% trans "Checkout" %}</a></li>
+                        <li {% if section == "category" %}class="active"{% endif %}><a href="{% url "shop:category_list" %}">{% trans "Category" %}</a></li>
+                        <li {% if section == "contact" %}class="active"{% endif %}><a href="{% url "orders:contact" %}">{% trans "Contact" %}</a></li>
+                    </ul>
+                </div>  
+            </div>
+        </div>
+    </div> <!-- End mainmenu area -->
+    {% block content %}
+    {% endblock  %}
+    <div class="footer-top-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="footer-about-us">
+                        <h2>u<span>{% trans "Stora" %}</span></h2>
+                        <p>{% trans "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis sunt id doloribus vero quam laborum quas alias dolores blanditiis iusto consequatur, modi aliquid eveniet eligendi iure eaque ipsam iste, pariatur omnis sint! Suscipit, debitis, quisquam. Laborum commodi veritatis magni at?" %}</p>
+                        <div class="footer-social">
+                            <a href="#" target="_blank"><i class="fa fa-facebook"></i></a>
+                            <a href="#" target="_blank"><i class="fa fa-twitter"></i></a>
+                            <a href="#" target="_blank"><i class="fa fa-youtube"></i></a>
+                            <a href="#" target="_blank"><i class="fa fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="footer-menu">
+                        <h2 class="footer-wid-title">{% trans "User Navigation" %} </h2>
+                        <ul>
+                            <li><a href="{% url "account:user_detail" username=request.user %}">{% trans "My account" %}</a></li>
+                            <li><a href="#">{% trans "Order history" %}</a></li>
+                            <li><a href="{% url "wishlist:list" %}">{% trans "Wishlist" %}</a></li>
+                            <li><a href="#">{% trans "Vendor contact" %}</a></li>
+                            <li><a href="{% url "shop:product_list" %}">{% trans "Front page" %}</a></li>
+                        </ul>                        
+                    </div>
+                </div>
+                
+                {% get_last_five_categories %}
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="footer-newsletter">
+                        <h2 class="footer-wid-title">{% trans "Newsletter" %}</h2>
+                        {% if messages %}
+                            <div class="messages">
+                                {% for message in messages %}
+                                    <div class="alert {% if message.tags %}alert-danger{% else %}alert-info{% endif %} alert-dismissible" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <p>{% trans "Sign up to our newsletter and get exclusive deals you wont find anywhere else straight to your inbox!" %}</p>
+                        <div class="newsletter-form">
+                            <form action="{% url "shop:subscribe" %}" method="POST">
+                                <input type="email" name="email" placeholder="Type your email">
+                                {% csrf_token %}
+                                <input type="submit" value="Subscribe">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End footer top area -->
+    
+    <div class="footer-bottom-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="copyright">
+                        <p>&copy; {% trans "2015 uCommerce. All Rights Reserved." %} <a href="http://www.freshdesignweb.com" target="_blank">{% trans "freshDesignweb.com" %}</a></p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="footer-card-icon">
+                        <i class="fa fa-cc-discover"></i>
+                        <i class="fa fa-cc-mastercard"></i>
+                        <i class="fa fa-cc-paypal"></i>
+                        <i class="fa fa-cc-visa"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End footer bottom area -->
+   
+    <!-- Latest jQuery form server -->
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    
+    <!-- Bootstrap JS form CDN -->
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+    
+    <!-- jQuery sticky menu -->
+    <script src="{% static "js/owl.carousel.min.js" %}"></script>
+    <script src="{% static "js/jquery.sticky.js" %}"></script>
+    
+    <!-- jQuery easing -->
+    <script src="{% static "js/jquery.easing.1.3.min.js" %}"></script>
+    
+    <!-- Main Script -->
+    <script src="{% static "js/main.js" %}"></script>
+    
+    <!-- Slider -->
+    <script type="text/javascript" src="{% static "js/bxslider.min.js" %}"></script>
+	<script type="text/javascript" src="{% static "js/script.slider.js" %}"></script>
+{% block script %}
+{% endblock %}    
+</script>
+  </body>
+</html>

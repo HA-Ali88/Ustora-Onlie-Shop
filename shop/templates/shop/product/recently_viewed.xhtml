@@ -1,0 +1,39 @@
+{% load static %}
+{% load custom_tags %}
+{% load custom_filters %}
+<div class="col-md-4">
+    <div class="single-product-widget">
+        <h2 class="product-wid-title">Recently Viewed</h2>
+        <a href="{% url "shop:recently_viewed_list" %}" class="wid-view-more">View All</a>
+        {% for rvp in recently_viewed_products %}
+        <div class="single-wid-product">
+        <a href="{{rvp.get_absolute_url}}"><img src="{% if rvp.image %}{{rvp.image.url}}{% else %}{% static "img/no-img.jpg" %}{% endif %}" alt=""
+                    class="product-thumb"></a>
+            <h2><a href="{{rvp.get_absolute_url}}">{{rvp.name}}</a></h2>
+            <div class="product-wid-rating">
+                {% with rvp.id as pro_id %}
+                {% with ratings|default_if_none:None|dict_get:pro_id as rating %}
+                {% if rating %}
+                {% for x in rating|make_range %}
+                <i class="fa fa-star"></i>
+                {% endfor %}
+                {% with no_rate|default_if_none:None|dict_get:pro_id as no_rated %}
+                {% for x in no_rated|make_range %}
+                <i class="fa fa-star-o"></i>
+                {% endfor %}
+                {% endwith %}
+                {% else %}
+                {% for x in 5|make_range %}
+                <i class="fa fa-star-o"></i>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                {% endwith %}
+            </div>
+            <div class="product-wid-price">
+                <ins>${{rvp.price}}</ins> <del>$425.00</del>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
